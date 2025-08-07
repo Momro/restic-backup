@@ -1,5 +1,16 @@
 # restic-backup
 
+## tl;dr
+
+```
+sudo su
+curl -s https://raw.githubusercontent.com/Momro/restic-backup/refs/heads/main/install.sh | bash
+```
+
+You will have to install the cron tab manually, though.
+
+## The long way
+
 First, we need restic as backup program
 ```
 $ sudo apt update && sudo apt upgrade -y && sudo apt install restic
