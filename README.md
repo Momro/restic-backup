@@ -22,6 +22,7 @@ Then create folders:
 $ sudo su
 # cd 
 # mkdir backup
+# mkdir backup/mount
 # mkdir -P /mnt/backup-share/backup // debian
 # mkdir -p /mnt/backup-share/backup // ubuntu
 ```
@@ -60,6 +61,7 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 Finally, set up a cron tab that mounts your backup share:
 
 ```
+# sudo apt install cron
 # crontab -e
 @reboot sleep 60 && mount -t cifs //qnap/backup/pi /mnt/backup-share -o username=backup,password="******"
 0 3 * * * /root/backup/backup.sh do-backup && /root/backup/backup.sh do-forget
