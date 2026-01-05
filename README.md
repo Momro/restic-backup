@@ -22,7 +22,8 @@ Then create folders:
 $ sudo su
 # cd 
 # mkdir backup
-# mkdir -P /mnt/backup-share/backup
+# mkdir -P /mnt/backup-share/backup // debian
+# mkdir -p /mnt/backup-share/backup // ubuntu
 ```
 
 Either clone my config files or create new ones
