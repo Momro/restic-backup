@@ -51,8 +51,8 @@ mv /tmp/restic/include.txt /root/backup/.
 Replace your restic password in the config
 
 ```
-echo "Enter Restic password"
-read -p "Enter password for repository:" RESTICPASSWORD
+echo "Enter Restic repo password "
+read -p "" RESTICPASSWORD
 echo
 sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ```
