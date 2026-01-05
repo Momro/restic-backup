@@ -52,7 +52,7 @@ Replace your restic password in the config
 
 ```
 echo "Enter Restic password"
-read -p RESTICPASSWORD
+read -p "Enter password for repository:" RESTICPASSWORD
 echo
 sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ```
