@@ -66,3 +66,18 @@ Finally, set up a cron tab that mounts your backup share:
 @reboot sleep 60 && mount -t cifs //qnap/backup/pi /mnt/backup-share -o username=backup,password="******"
 0 3 * * * /root/backup/backup.sh do-backup && /root/backup/backup.sh do-forget
 ```
+
+# restore
+
+```
+sudo su
+cd /root/backup
+screen -S mount
+./backup.sh do-mount
+<ctrl+a d>
+cd mount/snapshots/latest
+<do your thing>
+screen -r mount
+<ctrl+c>
+exit
+```
