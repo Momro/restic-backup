@@ -58,6 +58,10 @@ echo
 sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ```
 
+## Adjust include/exclude
+
+**Note**: If you exclude `/mnt` and include `/mnt/some-folder`, it will be **excluded**.
+
 ## set your home folder
 
 ```
