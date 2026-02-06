@@ -64,10 +64,11 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 echo "/home/<home folder>" >> include.txt
 ```
 
-Finally, set up a cron tab that mounts your backup share:
+Finally, set up a cron tab that mounts your backup share. Must be run as `root`!
 
 ```
 # sudo apt install cron
+# sudo su
 # crontab -e
 @reboot sleep 60 && mount -t cifs //qnap/backup/pi /mnt/backup-share -o username=backup,password="******"
 0 3 * * * /root/backup/backup.sh do-backup && /root/backup/backup.sh do-forget
