@@ -73,6 +73,13 @@ Finally, set up a cron tab that mounts your backup share:
 0 3 * * * /root/backup/backup.sh do-backup && /root/backup/backup.sh do-forget
 ```
 
+# initialize
+
+```
+restic -r <backup location> init
+enter secure password twice
+```
+
 # backup
 
 ```
