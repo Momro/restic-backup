@@ -1,9 +1,9 @@
 #!/bin/bash
-INCLUDE_FILE='/root/backup/include.txt'
-EXCLUDE_FILE='/root/backup/exclude.txt'
-MOUNT_POINT='/root/backup/mount'
+INCLUDE_FILE='/root/restic/include.txt'
+EXCLUDE_FILE='/root/restic/exclude.txt'
+MOUNT_POINT='/mnt/restic-restore'
 
-export RESTIC_REPOSITORY='/mnt/backup-share/backup'
+export RESTIC_REPOSITORY='/mnt/restic-backup-target'
 export RESTIC_PASSWORD='enter your password here'
 
 case "$1" in
