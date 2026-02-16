@@ -21,10 +21,9 @@ Then create folders:
 ```
 $ sudo su
 # cd 
-# mkdir backup
-# mkdir backup/mount
-# mkdir -P /mnt/backup-share/backup // debian
-# mkdir -p /mnt/backup-share/backup // ubuntu
+# mkdir restic
+# mkdir -P /mnt/restic-restore // debian
+# mkdir -p /mnt/restic-restore // ubuntu
 ```
 
 Either clone my config files or create new ones
@@ -33,9 +32,9 @@ Either clone my config files or create new ones
 
 ```
 git clone https://github.com/Momro/restic-backup /tmp/restic
-mv /tmp/restic/backup.sh /root/backup/.
-mv /tmp/restic/exclude.txt /root/backup/.
-mv /tmp/restic/include.txt /root/backup/.
+mv /tmp/restic/backup.sh /root/restic/.
+mv /tmp/restic/exclude.txt /root/restic/.
+mv /tmp/restic/include.txt /root/restic/.
 ```
 
 ## create
