@@ -59,6 +59,13 @@ echo
 sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ```
 
+## add password to smbcred
+
+```
+touch /root/smbcred/<share name>
+echo "username=\npassword="
+```
+
 ## Adjust include/exclude
 
 **Note**: If you exclude `/mnt` and include `/mnt/some-folder`, it will be **excluded**.
