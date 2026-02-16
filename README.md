@@ -13,19 +13,17 @@ You will have to install the cron tab manually, though.
 
 First, we need restic as backup program
 ```
-$ sudo apt update && sudo apt upgrade -y && sudo apt install restic cifs-utils -y
+sudo apt update && sudo apt upgrade -y && sudo apt install restic cifs-utils -y
 ```
 
 Then create folders:
 
 ```
-$ sudo su
-# mkdir /root/restic
-# mkdir /root/smbcred
-# mkdir -P /mnt/restic-restore // debian
-# mkdir -p /mnt/restic-restore // ubuntu
-# mkdir /mnt/restic-backup-target
-# mkdir /mnt/restic-restore
+sudo su
+mkdir /root/restic
+mkdir /root/smbcred
+mkdir /mnt/restic-backup-target
+mkdir /mnt/restic-restore
 ```
 
 Either clone my config files or create new ones
@@ -42,7 +40,6 @@ mv /tmp/restic/include.txt /root/restic/.
 ## create
 
 ```
-# cd backup
 # touch backup.sh
 # touch exclude.txt
 # touch include.txt
@@ -53,6 +50,7 @@ mv /tmp/restic/include.txt /root/restic/.
 Replace your restic password in the config
 
 ```
+cd /root/restic
 echo "Enter Restic repo password "
 read -p "" RESTICPASSWORD
 echo
@@ -63,7 +61,7 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 
 ```
 touch /root/smbcred/backup
-echo "username=backup\npassword="
+echo "username=backup\npassword=" > /root/smbcred/backup
 ```
 
 ## Adjust include/exclude
@@ -79,9 +77,10 @@ echo "/home/<home folder>" >> include.txt
 Finally, set up a cron tab that mounts your backup share. Must be run as `root`!
 
 ```
-# sudo apt install cron
-# sudo su
-# crontab -e
+sudo apt install cron
+sudo su
+crontab -e
+
 @reboot sleep 60 && mount -t cifs //qnap/backup/<device name> /mnt/restic-backup-target -o credentials=/root/smbcred/<device name>,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
 0 3 * * * /root/restic/backup.sh do-backup && /root/restic/backup.sh do-forget
 ```
