@@ -24,6 +24,8 @@ $ sudo su
 # mkdir restic
 # mkdir -P /mnt/restic-restore // debian
 # mkdir -p /mnt/restic-restore // ubuntu
+# mkdir /mnt/restic-backup-target
+# mkdir /mnt/restic-restore
 ```
 
 Either clone my config files or create new ones
