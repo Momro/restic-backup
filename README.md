@@ -13,7 +13,7 @@ You will have to install the cron tab manually, though.
 
 First, we need restic as backup program
 ```
-$ sudo apt update && sudo apt upgrade -y && sudo apt install restic
+$ sudo apt update && sudo apt upgrade -y && sudo apt install restic cifs-utils -y
 ```
 
 Then create folders:
