@@ -61,7 +61,7 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 
 ```
 touch /root/smbcred/backup
-echo "username=backup\npassword=" > /root/smbcred/backup
+echo "username=backup" >> /root/smbcred/backup ; echo "password=" >> /root/smbcred/backup
 ```
 
 ## Adjust include/exclude
