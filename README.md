@@ -73,8 +73,8 @@ Finally, set up a cron tab that mounts your backup share. Must be run as `root`!
 # sudo apt install cron
 # sudo su
 # crontab -e
-@reboot sleep 60 && mount -t cifs //qnap/backup/pi /mnt/backup-share -o username=backup,password="******"
-0 3 * * * /root/backup/backup.sh do-backup && /root/backup/backup.sh do-forget
+@reboot sleep 60 && mount -t cifs //qnap/backup/<device name> /mnt/restic-backup-target -o credentials=/root/smbcred/<device name>,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
+0 3 * * * /root/restic/backup.sh do-backup && /root/restic/backup.sh do-forget
 ```
 
 # initialize
@@ -89,7 +89,7 @@ enter secure password twice
 ```
 sudo su
 cd
-cd backup
+cd restic
 ./backup.sh do-backup
 ```
 
@@ -97,7 +97,7 @@ cd backup
 
 ```
 sudo su
-cd /root/backup
+cd /root/restic
 screen -S mount
 ./backup.sh do-mount
 <ctrl+a d>
