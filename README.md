@@ -20,8 +20,8 @@ Then create folders:
 
 ```
 $ sudo su
-# cd 
-# mkdir restic
+# mkdir /root/restic
+# mkdir /root/smbcred
 # mkdir -P /mnt/restic-restore // debian
 # mkdir -p /mnt/restic-restore // ubuntu
 # mkdir /mnt/restic-backup-target
@@ -62,8 +62,8 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ## add password to smbcred
 
 ```
-touch /root/smbcred/<share name>
-echo "username=\npassword="
+touch /root/smbcred/backup
+echo "username=backup\npassword="
 ```
 
 ## Adjust include/exclude
