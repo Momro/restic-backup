@@ -81,7 +81,7 @@ sudo apt install cron
 sudo su
 crontab -e
 
-@reboot sleep 60 && mount -t cifs //qnap/backup/<device name> /mnt/restic-backup-target -o credentials=/root/smbcred/<device name>,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
+@reboot sleep 60 && mount -t cifs //qnap/backup/<device name> /mnt/restic-backup-target -o credentials=/root/smbcred/backup,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
 0 3 * * * /root/restic/backup.sh do-backup && /root/restic/backup.sh do-forget
 ```
 
