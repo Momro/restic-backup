@@ -4,10 +4,8 @@ EXCLUDE_FILE='/root/restic/exclude.txt'
 MOUNT_POINT='/mnt/restic-restore'
 
 export RESTIC_REPOSITORY='/mnt/restic-backup-target'
-export RESTIC_PASSWORD='enter your password here'
 
-KUMA_PUSH_URL="http://<kuma ip>:<port>/api/push/<token>?status=up&msg=backup&ping=1234"
-KUMA_ENABLED=1 # 1 == False, 0 == True
+KUMA_ENABLED=0
 
 START=$(date '+%s')
 
@@ -19,23 +17,37 @@ function isMounted {
         fi
 }
 
+function performBackup {
+        /usr/bin/restic \
+        --verbose \
+        --password-file=/root/restic/.restic-pass \
+        backup \
+        --exclude-file=$EXCLUDE_FILE \
+        --files-from=$INCLUDE_FILE
+}
+
+function performPurge {
+        /usr/bin/restic \
+        forget \
+        --prune \
+        --keep-daily 30 \
+        --keep-weekly 10 \
+        --keep-monthly 12 \
+        --keep-yearly 75
+}
+
 case "$1" in
         "do-backup")
                 if isMounted ; then
-                        /usr/bin/restic \
-                        --verbose \
-                        backup \
-                        --exclude-file=$EXCLUDE_FILE \
-                        --files-from=$INCLUDE_FILE
+                        performBackup
 
                         END=$(date '+%s')
                         DURATION=$((END - START))
 
                         if [[ $KUMA_ENABLED == 0 ]] ; then
-                                curl -s -o /dev/null "$KUMA_PUSH_URL"
-                        else
-                                echo "Backup finished in ${DURATION} seconds."
+                                curl -s -o /dev/null "$(cat ./kuma_push_url)"
                         fi
+                        echo "Backup finished in ${DURATION} seconds."
                 else
                         echo "there is no mount at ${RESTIC_REPOSITORY}"
                         exit 1
@@ -43,13 +55,7 @@ case "$1" in
         ;;
         "do-forget")
                 if isMounted ; then
-                        /usr/bin/restic \
-                        forget \
-                        --prune \
-                        --keep-daily 30 \
-                        --keep-weekly 10 \
-                        --keep-monthly 12 \
-                        --keep-yearly 75
+                        performPurge
                 else
                         echo "there is no mount at ${RESTIC_REPOSITORY}"
                         exit 1
