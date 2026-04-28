@@ -40,9 +40,9 @@ mv /tmp/restic/include.txt /root/restic/.
 ## create
 
 ```
-# touch backup.sh
-# touch exclude.txt
-# touch include.txt
+touch backup.sh
+touch exclude.txt
+touch include.txt
 ```
 
 ## replace password
