@@ -35,6 +35,8 @@ git clone https://github.com/Momro/restic-backup /tmp/restic
 mv /tmp/restic/backup.sh /root/restic/.
 mv /tmp/restic/exclude.txt /root/restic/.
 mv /tmp/restic/include.txt /root/restic/.
+mv /tmp/restic/.restic-pass /root/restic/.
+mv /tmp/restic/kuma_push_url /root/restic/.
 ```
 
 ## create
@@ -43,6 +45,8 @@ mv /tmp/restic/include.txt /root/restic/.
 touch backup.sh
 touch exclude.txt
 touch include.txt
+touch .restic-pass
+touch kuma_push_url
 ```
 
 ## replace password
@@ -62,6 +66,12 @@ sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
 ```
 touch /root/smbcred/backup
 echo "username=backup" >> /root/smbcred/backup ; echo "password=" >> /root/smbcred/backup
+```
+
+## adjust kuma url
+
+```
+echo "https://kuma.example.com/token" > kuma_push_url
 ```
 
 ## Adjust include/exclude
