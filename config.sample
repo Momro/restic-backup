@@ -1,0 +1,37 @@
+# config
+
+###############################
+## SOURCES
+INCLUDE_FILE="/root/restic/include.txt"
+EXCLUDE_FILE="/root/restic/exclude.txt"
+export INCLUDE_FILE EXCLUDE_FILE
+
+###############################
+## BACKUP TARGET
+SFTP_USER="mySftpUser"
+SFTP_TARGETNAME="resticBackupTarget"
+SFTP_REPOSITORY_MOUNTPOINT="/media/backup-usb-drive" # the remote mount point where the backup shall be stored
+RESTIC_REPOSITORY="sftp:${SFTP_USER}@${SFTP_TARGETNAME}:${SFTP_REPOSITORY_MOUNTPOINT}"
+
+###############################
+## SMB mount point
+RESTIC_REPOSITORY='/mnt/restic-backup-target'
+
+export RESTIC_REPOSITORY
+
+###############################
+## RESTIC PASSWORD
+RESTIC_PASSWORD_FILE="/root/restic/.restic-pass"
+export RESTIC_PASSWORD_FILE
+
+###############################
+## KUMA CONFIG
+KUMA_ENABLED=1
+KUMA_PUSH_URL_FILE="/root/restic/kuma_push_url"
+
+###############################
+## KEEPERS
+KP_DAILY=7
+KP_WEEKLY=4
+KP_MONTHLY=12
+KP_YEARLY=3
