@@ -4,7 +4,8 @@
 ## SOURCES
 INCLUDE_FILE="/root/restic/include.txt"
 EXCLUDE_FILE="/root/restic/exclude.txt"
-export INCLUDE_FILE EXCLUDE_FILE
+MOUNT_POINT="/mnt/restic-restore"
+export INCLUDE_FILE EXCLUDE_FILE MOUNT_POINT
 
 ###############################
 ## BACKUP TARGET
