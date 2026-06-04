@@ -1,8 +1,9 @@
 .gitignore
 .restic-pass
-README.md
+config
 exclude.txt
 include.txt
 install.sh
 kuma_push_url
+README.md
 *.sample
