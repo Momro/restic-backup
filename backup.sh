@@ -8,11 +8,6 @@ CONFIG_FILE="/root/restic/config"
 # shellcheck source=/root/restic/config
 source "$CONFIG_FILE"
 
-#####################################
-# DO NOT CHANGE ANYTHING BELOW THIS #
-#####################################
-
-START=$(date '+%s')
 
 function isMounted {
         # if remote is SFTP
@@ -60,11 +55,18 @@ function performPurge {
 case "$1" in
         "do-backup")
                 if isMounted ; then
+                        # Start time of backup execution
+                        START=$(date '+%s')
+                        
+                        # execute backup
                         performBackup
 
+                        # end time of backup execution
                         END=$(date '+%s')
+                        # calculate duration of backup
                         DURATION=$((END - START))
 
+                        # send kuma notification if configured 
                         if [[ $KUMA_ENABLED == 1 ]] ; then
                                 curl -s -o /dev/null "$(cat ${KUMA_PUSH_URL_FILE} | sed "s/OK/${DURATION}/g" )"
                                 echo "kuma sent"
