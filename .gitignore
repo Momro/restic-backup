@@ -1,0 +1,8 @@
+.gitignore
+.restic-pass
+README.md
+exclude.txt
+include.txt
+install.sh
+kuma_push_url
+*.sample
