@@ -1,40 +1,12 @@
 #!/bin/bash
-INCLUDE_FILE='/root/restic/include.txt'
-EXCLUDE_FILE='/root/restic/exclude.txt'
-MOUNT_POINT='/mnt/restic-restore'
 
-#####################################
-# TARGET DEFINITION
-# can either be SFTP or SMB
+set -euo pipefail
 
-## SFTP details
-SFTP_USER="mySftpUser"
-SFTP_TARGETNAME="resticBackupTarget"
-SFTP_REPOSITORY_MOUNTPOINT="/media/backup-usb-drive" # the remote mount point where the backup shall be stored
-RESTIC_REPOSITORY="sftp:${SFTP_USER}@${SFTP_TARGETNAME}:${SFTP_REPOSITORY_MOUNTPOINT}"
+CONFIG_FILE="/root/restic/config"
+[ -f "$CONFIG_FILE" ] || { echo "Config fehlt: $CONFIG_FILE" >&2; exit 1; }
 
-## SMB mount point
-RESTIC_REPOSITORY='/mnt/restic-backup-target'
-
-export RESTIC_REPOSITORY
-#####################################
-
-#####################################
-# KEEPERS
-# How long do you want each backup to remain?
-KP_DAILY=7
-KP_WEEKLY=5
-KP_MONTHLY=12
-KP_YEARLY=3
-#####################################
-
-#####################################
-# KUMA REPORTING
-# set to 1 to enable
-KUMA_ENABLED=0
-## if the URL contains an "OK", the script will insert there the time it took to take the backup
-KUMA_PUSH_URL_FILE="/root/restic/kuma_push_url"
-#####################################
+# shellcheck source=/root/restic/config
+source "$CONFIG_FILE"
 
 #####################################
 # DO NOT CHANGE ANYTHING BELOW THIS #
@@ -51,7 +23,7 @@ function isMounted {
                 isMountedRemotely=$(ssh ${SFTP_TARGETNAME} "mountpoint -q ${SFTP_REPOSITORY_MOUNTPOINT} && echo '0'")
                 # return 1 (not mounted) or 0 (mounted)
                 return $isMountedRemotely
-        elif [[ $(mount | grep $RESTIC_REPOSITORY | wc -l) > 0 ]] ; then        
+        elif [[ $(mount | grep $RESTIC_REPOSITORY | wc -l) > 0 ]] ; then
                 return 0
         else
                 return 1
@@ -61,25 +33,26 @@ function isMounted {
 function performBackup {
         echo "[#] #####################################"
         echo "[+] Backup to ${RESTIC_REPOSITORY}"
+        echo "[+] Includes:"
+        cat "$INCLUDE_FILE"
         echo "[#] #####################################"
-        /usr/bin/restic \
-        --verbose \
-        --password-file=/root/restic/.restic-pass \
-        --exclude-file=$EXCLUDE_FILE \
-        --files-from=$INCLUDE_FILE \
-        backup
+        /usr/bin/restic backup \
+                --verbose \
+                --password-file="${RESTIC_PASSWORD_FILE}" \
+                --exclude-file="${EXCLUDE_FILE}" \
+                --files-from="${INCLUDE_FILE}"
 }
 
 function performPurge {
         echo "[#] #####################################"
         echo "[+] Purging now"
-        /usr/bin/restic \
-        --prune \
-        --keep-daily $KP_DAILY \
-        --keep-weekly $KP_WEEKLY \
-        --keep-monthly $KP_MONTHLY \
-        --keep-yearly $KP_YEARLY
-        forget
+        /usr/bin/restic forget \
+                --prune \
+                --password-file="${RESTIC_PASSWORD_FILE}" \
+                --keep-daily $KP_DAILY \
+                --keep-weekly $KP_WEEKLY \
+                --keep-monthly $KP_MONTHLY \
+                --keep-yearly $KP_YEARLY
         echo "[#] #####################################"
         echo "[+] Purge is done"
 }
