@@ -12,7 +12,7 @@ apt update && sudo apt upgrade -y && sudo apt install -y restic cifs-utils cron 
 ## clone, files, folders
 ```
 # clone repo
-git clone https://github.com/Momro/restic-backup /root/restic
+git clone https://github.com/Momro/restic-backup /root/restic && cd /root/restic
 
 # cp sample files to actual config location
 cp config.sample config && cp exclude.txt.sample exclude.txt && cp include.txt.sample include.txt && cp kuma_push_url.sample kuma_push_url && cp .restic-pass.sample .restic-pass
