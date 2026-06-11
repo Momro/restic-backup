@@ -36,7 +36,7 @@ touch "${CREDENTIAL_FILE_LOCATION}"
 
 # insert your backup user's account name
 echo "username=<USERNAME>" > "${CREDENTIAL_FILE_LOCATION}"
-echo "password=<password>" > "${CREDENTIAL_FILE_LOCATION}"
+echo "password=<password>" >> "${CREDENTIAL_FILE_LOCATION}"
 
 
 # add kuma url
