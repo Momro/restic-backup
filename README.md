@@ -31,6 +31,7 @@ generate-password 20 > .restic-pass
 
 # add credentials file for SMB connection
 CREDENTIAL_FILE_LOCATION="/root/smbcreds/backup"
+mkdir /root/smbcreds
 touch "${CREDENTIAL_FILE_LOCATION}"
 
 # insert your backup user's account name
