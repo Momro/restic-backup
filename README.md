@@ -1,127 +1,122 @@
-# restic-backup
+# restic installation
 
-## tl;dr
+## Install required packets
 
 ```
+# everything will run as sudo, so we can su anyway
 sudo su
-curl -s https://raw.githubusercontent.com/Momro/restic-backup/refs/heads/main/install.sh | bash
+# First, we need restic as backup program
+apt update && sudo apt upgrade -y && sudo apt install -y restic cifs-utils cron screen
 ```
 
-You will have to install the cron tab manually, though.
-
-## The long way
-
-First, we need restic as backup program
+## clone, files, folders
 ```
-sudo apt update && sudo apt upgrade -y && sudo apt install restic cifs-utils -y
-```
+# clone repo
+git clone https://github.com/Momro/restic-backup /root/restic
 
-Then create folders:
+# cp sample files to actual config location
+cp config.sample config && cp exclude.txt.sample exclude.txt && cp include.txt.sample include.txt && cp kuma_push_url.sample kuma_push_url && cp .restic-pass.sample .restic-pass
 
-```
-sudo su
-mkdir /root/restic
-mkdir /root/smbcred
-mkdir /mnt/restic-backup-target
+# mkdir mount point for a) backup, b) restore
 mkdir /mnt/restic-restore
+mkdir /mnt/restic-backup-target
 ```
 
-Either clone my config files or create new ones
-
-## clone
+## config starts here
 
 ```
-git clone https://github.com/Momro/restic-backup /tmp/restic
-mv /tmp/restic/backup.sh /root/restic/.
-mv /tmp/restic/exclude.txt /root/restic/.
-mv /tmp/restic/include.txt /root/restic/.
-mv /tmp/restic/.restic-pass /root/restic/.
-mv /tmp/restic/kuma_push_url /root/restic/.
+# generate random password
+generate-password 20 > .restic-pass
+
+
+# add credentials file for SMB connection
+CREDENTIAL_FILE_LOCATION="/root/smbcreds/backup"
+touch "${CREDENTIAL_FILE_LOCATION}"
+
+# insert your backup user's account name
+echo "username=<USERNAME> >> "${CREDENTIAL_FILE_LOCATION}"
+echo "password=<password> >> "${CREDENTIAL_FILE_LOCATION}"
+
+
+# add kuma url
+KUMA_PUSH_URL=""
+echo "${KUMA_PUSH_URL}" > kuma_push_url
 ```
 
-## create
+now edit the `config` file. this cannot be automated. mainly, remove SMB or SFTP depending on what you are going to do
+
+Then edit the `include.txt` -> I mostly use `/home/user/docker/`
+
+The `exclude` file is ok in the default for me.
+
+## cronjob
+
+Time to set up the cronjob -> `crontab -e`
 
 ```
-touch backup.sh
-touch exclude.txt
-touch include.txt
-touch .restic-pass
-touch kuma_push_url
-```
+# mount backup repository
+# Example:
+# @reboot sleep 60 && mount -t cifs //<IP>/<FOLDER> /mnt/restic-backup-target -o credentials=/root/smbcred/backup,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
+@reboot sleep 60 && mount -t cifs //<TARGET IP>/<TARGET FOLDER> /mnt/<MOUNT POINT> -o credentials=<CREDENTIAL FILE>,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
 
-## replace password
-
-Replace your restic password in the config
-
-```
-cd /root/restic
-echo "Enter Restic repo password "
-read -p "" RESTICPASSWORD
-echo
-sed -i "s|enter your password here|${RESTICPASSWORD}|g" backup.sh
-```
-
-## add password to smbcred
-
-```
-touch /root/smbcred/backup
-echo "username=backup" >> /root/smbcred/backup ; echo "password=" >> /root/smbcred/backup
-```
-
-## adjust kuma url
-
-```
-echo "https://kuma.example.com/token" > kuma_push_url
-```
-
-## Adjust include/exclude
-
-**Note**: If you exclude `/mnt` and include `/mnt/some-folder`, it will be **excluded**.
-
-## set your home folder
-
-```
-echo "/home/<home folder>" >> include.txt
-```
-
-Finally, set up a cron tab that mounts your backup share. Must be run as `root`!
-
-```
-sudo apt install cron
-sudo su
-crontab -e
-
-@reboot sleep 60 && mount -t cifs //qnap/backup/<device name> /mnt/restic-backup-target -o credentials=/root/smbcred/backup,uid=1000,gid=1000,file_mode=0775,dir_mode=0775,noperm,forceuid,forcegid,vers=3.0
+# perform backup at 3am
 0 3 * * * /root/restic/backup.sh do-backup && /root/restic/backup.sh do-forget
 ```
 
-# initialize
+## mount
+mount the backup destination
+```
+mount ... whatever your cronjob says
+```
+
+Everything is set up now:
+* backup.sh is downloaded
+* Folders for backup and restore were created
+* Password for repo is set
+* kuma is set
+* smb credentials are stored
+* `config` file points to correct protocol -> `smb` or `sftp`
+* included and excluded files were set
+* You have mounted the backup repository
+
+Time to do the first backup!
+
+## initialize
 
 ```
-restic -r <backup location> init
-enter secure password twice
-```
-
+# init
+./backup.sh init
 # backup
-
-```
-sudo su
-cd
-cd restic
 ./backup.sh do-backup
 ```
 
-# restore
 
+# restore
+if you need to restore file,s this is the way to go:
 ```
+# go root
 sudo su
+# go to restic folder
 cd /root/restic
+# start screen session in which we mount the backup
 screen -S mount
+# mount the backup
 ./backup.sh do-mount
+# leave screen session
 <ctrl+a d>
-cd mount/snapshots/latest
-<do your thing>
+# go to latest backup
+cd /mnt/restic-restore/snapshots/latest
+
+#################
+# <do your thing>
+#################
+
+# once you're done, go back to the mount-screen
 screen -r mount
+# quit the mounting
 <ctrl+c>
+# quit the screen session
 exit
 ```
+
+Enjoy!
