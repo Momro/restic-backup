@@ -6,7 +6,7 @@
 # everything will run as sudo, so we can su anyway
 sudo su
 # First, we need restic as backup program
-apt update && sudo apt upgrade -y && sudo apt install -y restic cifs-utils cron screen
+apt update && sudo apt upgrade -y && sudo apt install -y restic cifs-utils cron screen git
 ```
 
 ## clone, files, folders
@@ -25,7 +25,7 @@ mkdir /mnt/restic-backup-target
 ## config starts here
 
 ```
-# generate random password
+# generate random password; will only work when my ZSHCONFIG is installed
 generate-password 20 > .restic-pass
 
 
